@@ -1,0 +1,51 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy container app to Azure Web App - trail-dash
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: 'ubuntu-latest'
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Log in to registry
+      uses: docker/login-action@v1
+      with:
+        registry: https://mlopsmlopscr.azurecr.io/
+        username: ${{ secrets.AzureAppService_ContainerUsername_31d6117ec67e4c80b2843c4d186b3344 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_9efcd186b0774c8f9d6241fbe4ee7904 }}
+
+    - name: Build and push container image to registry
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: mlopsmlopscr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_31d6117ec67e4c80b2843c4d186b3344 }}/azureml/azureml_134293382750c1bb119025659155ea48:${{ github.sha }}
+        file: ./Dockerfile
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'trail-dash'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_0bad9123427b457492359871510c0b35 }}
+        images: 'mlopsmlopscr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_31d6117ec67e4c80b2843c4d186b3344 }}/azureml/azureml_134293382750c1bb119025659155ea48:${{ github.sha }}'
