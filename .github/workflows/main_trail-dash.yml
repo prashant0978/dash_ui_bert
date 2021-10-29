@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://mlopsmlopscr.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_a6d20acee8e34dacbc299f5653f87eab }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_2ff19de7f0a7436c827ef092b4013095 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_4b6a7f45e90046569b710ff2b1c4e47b }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_8dd388f0b7a845bf9169b5d9878a7542 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: mlopsmlopscr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_a6d20acee8e34dacbc299f5653f87eab }}/azureml/azureml_134293382750c1bb119025659155ea48:${{ github.sha }}
+        tags: mlopsmlopscr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4b6a7f45e90046569b710ff2b1c4e47b }}/azureml/azureml_134293382750c1bb119025659155ea48:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'trail-dash'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7e8f34dcbd88446bbb5be9724cdd7dcd }}
-        images: 'mlopsmlopscr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_a6d20acee8e34dacbc299f5653f87eab }}/azureml/azureml_134293382750c1bb119025659155ea48:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7e152f25f25a425086f1ffeb7378a215 }}
+        images: 'mlopsmlopscr.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_4b6a7f45e90046569b710ff2b1c4e47b }}/azureml/azureml_134293382750c1bb119025659155ea48:${{ github.sha }}'
